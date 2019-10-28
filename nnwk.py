@@ -101,7 +101,7 @@ class NeuralNetwork():
         arr.append(outputBiases)
         return arr
 
-    def write(type,hCount,pCount):
+    def write(self,type,hCount,pCount):
         data = []
         for i in range(0,10):
             for x in range (0,inputCount):

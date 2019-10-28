@@ -228,6 +228,7 @@ class Player:
 
 class Hunter:
 
+    fitness = 0
     x = 0
     y = 0
 
@@ -275,16 +276,15 @@ class Hunter:
     #### the power of the time is there so that it will incentivise self.speed at the beginning more than when it is closer to 0
     #### this is in the hopes that as the hunter gets faster it will focus on finding all players instead of just being fast finding the first
     def getFitness(self,times):
-        fitness = 0
-        prevTime
+        prevTime = 0
         for i,t in enumerate(times):
-            fitness += 100/(t-prevTime-i)
+            self.fitness += 100/(t-prevTime-i)
             prevTime += t
 
         if times[len(times)-1] < 1500:
-            fitness += 500
+            self.fitness += 500
 
-        return fitness
+        return self.fitness
 
     def upX(self):
         self.x+= self.speed
@@ -404,6 +404,11 @@ class Hunter:
         for i in range (len(pDistances)):
             if wDistances[i] < pDistances[i]:
                 pDistances[i] == 10000
+
+        for d in pDistances:
+            #tiny incentive to get closer to players so that the hunter can more easily stumble into points
+            if d != 10000:
+                self.fitness += math.sqrt(visRad/d*10)
 
         nnInputArray.extend(wDistances)
         nnInputArray.extend(pDistances)

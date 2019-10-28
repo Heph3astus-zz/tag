@@ -1,4 +1,4 @@
-from threading import Thread
+import os
 import tag
 
 simCount = 0
@@ -23,8 +23,6 @@ while True:
     except:
         print("not an int. please try again")
 
-if genCount == 1:
-    continuous == True
 
 print("display one sim per generation (y/n): ")
 display = input()
@@ -63,7 +61,16 @@ sims = [None] * simCount
 hShuffleRate = 1
 pShuffleRate = 1
 
+info = "genInfo/" + str(playerCount) + ":" + str(hunterCount) + ".txt"
+
 genIndex = 0
+if os.path.isfile(info):
+    with open(info,'r') as f:
+        l = f.readlines()
+        genIndex = l[1]
+else:
+    with open(info,'w') as f:
+        f.writelines(["generation:\n0"])
 
 for i in range (genCount):
 
@@ -85,6 +92,7 @@ for i in range (genCount):
             if results[i] == None:
                 if sims[i].running == False:
                     results[i] = sims[i].getResults()
+
                     continue
                 sims[i].runSim()
                 isDone = False
@@ -101,7 +109,7 @@ for i in range (genCount):
     pShuffleRate = 0
 
     for i in range(len(results)):
-        if results[i][0] > hFitness:
+        if results[i][0] >= hFitness:
             hFitness = results[i][0]
             hNetwork = results[i][5]
             hShuffleRate = results[i][2]
@@ -114,6 +122,18 @@ for i in range (genCount):
     print("best hunter fitness: " + str(hFitness))
     print("best player fitness: " + str(pFitness))
 
+
+    hNetwork.write("hunter",hunterCount,playerCount)
+    pNetwork.write("player",hunterCount,playerCount)
+
     genIndex+=1
     if genCount == 1:
         i+= -1
+
+data = None
+with open(info,'r') as f:
+    data = file.readlines
+
+data[1] = genIndex
+with open(info,'w') as f:
+    f.writelines(data)
