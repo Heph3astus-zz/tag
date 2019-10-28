@@ -10,6 +10,10 @@ def walls():
         a = random.random()*math.pi*2
 
         walls.append([sPoint,(math.cos(a)*r+sPoint[0],math.sin(a)*r+sPoint[1])])
+    walls.append([(0,0),(0,1000)])
+    walls.append([(0,0),(1000,0)])
+    walls.append([(0,1000),(1000,1000)])
+    walls.append([(1000,0),(1000,1000)])
     return walls
 
 

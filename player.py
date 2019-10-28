@@ -19,8 +19,9 @@ class Player:
 
     rect = None
 
+    captured = False
 
-
+    fitness = 2000
 
     #### IMPORTANT NOTICE. Since I'm too lazy to figure out how to do variable
     #### input node count so that the number of hunters and players can be
@@ -55,6 +56,8 @@ class Player:
                     s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
                 except:
                     s = 10000
+                if s == 0:
+                    s = 0.000001
                 if ((s * rect.x + w[0][1] >= rect.y and s * rect.x + w[0][1] <= rect.y+rect.h)
                     or (s * (rect.x+rect.w) + w[0][1] >= rect.y and s * (rect.x+rect.w) + w[0][1] <= rect.y+rect.h)
                     or (rect.y/s >= rect.x and rect.y/s <= rect.x + rect.w)
@@ -71,8 +74,8 @@ class Player:
 
 
 
-    def getFitness(seconds):
-        return seconds
+    def getFitness(frames):
+        return math.sqrt(frames)
 
     def upX(self):
         self.x+= self.speed
@@ -83,6 +86,8 @@ class Player:
                 s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
             except:
                 s = 10000
+            if s == 0:
+                s = 0.000001
             if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
                 or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
                 or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
@@ -102,6 +107,8 @@ class Player:
                 s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
             except:
                 s = 10000
+            if s == 0:
+                s = 0.000001
             if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
                 or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
                 or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
@@ -121,6 +128,8 @@ class Player:
                 s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
             except:
                 s = 10000
+            if s == 0:
+                s = 0.000001
             if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
                 or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
                 or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
@@ -140,6 +149,8 @@ class Player:
                 s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
             except:
                 s = 10000
+            if s == 0:
+                s = 0.000001
             if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
                 or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
                 or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
@@ -151,9 +162,34 @@ class Player:
             self.rect.move_ip(0,self.speed)
 
     def Hole(self):
-        return
+        if self.isInHole == 0:
+            distance = math.sqrt((self.x-self.closestHoleX)**2 + (self.y-self.closestHoleY)**2)
+            if distance < 20:
+                self.x = self.closestHoleX
+                self.y = self.closestHoleY
+                self.isInHole = 1
+                self.rect.x = self.closestHoleX - self.rect.w/2
+                self.rect.y = self.closestHoleY - self.rect.h/2
+        else:
+            self.isInHole = 0
 
-    def getInputs(self,players,hunters,walls,screen):
+    def Capture():
+        self.captured = True
+        self.x = -100
+        self.y = -100
+        self.rect.x = -100
+        self.rect.y = -100
+
+
+    def getInputs(self,players,hunters,walls,holes,screen):
+
+        d = 5000
+        for h in holes:
+            distance = math.sqrt((self.x-(h.x+h.w/2))**2 + (self.y-(h.x+h.h/2))**2)
+            if distance < d:
+                d = distance
+                self.closestHoleX = h.x+h.w/2
+                self.closestHoleY = h.y+h.h/2
 
         nnInputArray = [self.x,self.y,self.closestHoleX,self.closestHoleY]
 
@@ -205,7 +241,11 @@ class Hunter:
 
     speed = 5
 
+    checkLength = 0
+
     visRad = 100
+
+    checkingHole = 0
 
     def __init__(self,walls,hunterCount,playerCount,seed):
         random.seed(seed)
@@ -234,13 +274,14 @@ class Hunter:
     #### a 500 bonus is added if the last player is caught. This incentivises completion of the find
     #### the power of the time is there so that it will incentivise self.speed at the beginning more than when it is closer to 0
     #### this is in the hopes that as the hunter gets faster it will focus on finding all players instead of just being fast finding the first
-    def getFitness(t):
+    def getFitness(self,t):
         fitness = 0
         prevTime = 0
         for i, v in enumerate(t):
-            fitness+=(900-(v-prevTime)**2)/(i+1)
-            prevTime += v
-        if t[len(t)] < 30:
+            if 1000-(v-prevTime) > 0:
+                fitness+=(1000-(v-prevTime)**2)/(i+1)
+            prevTime += v-prevTime
+        if t[len(t)-1] < 1000:
             fitness += 500
         return fitness
 
@@ -253,12 +294,15 @@ class Hunter:
                 s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
             except:
                 s = 10000
+            if s == 0:
+                s = 0.000001
             if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
                 or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
                 or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
                 or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
             ):
                 hit = True
+
         if hit:
             self.x-= self.speed
             self.rect.move_ip(-self.speed,0)
@@ -272,6 +316,8 @@ class Hunter:
                 s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
             except:
                 s = 10000
+            if s == 0:
+                s = 0.000001
             if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
                 or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
                 or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
@@ -291,6 +337,8 @@ class Hunter:
                 s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
             except:
                 s = 10000
+            if s == 0:
+                s = 0.000001
             if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
                 or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
                 or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
@@ -310,6 +358,8 @@ class Hunter:
                 s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
             except:
                 s = 10000
+            if s == 0:
+                s = 0.000001
             if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
                 or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
                 or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
@@ -321,9 +371,21 @@ class Hunter:
             self.rect.move_ip(0,self.speed)
 
     def Hole(self):
-        return
+        distance = math.sqrt((self.x-self.closestHoleX)**2 + (self.y-self.closestHoleY)**2)
+        if distance < 20:
+            self.checkingHole = True
 
-    def getInputs(self, players,walls,screen):
+
+    def getInputs(self, players,walls,holes,screen):
+
+        d = 5000
+        for h in holes:
+            distance = math.sqrt((self.x-(h.x+h.w/2))**2 + (self.y-(h.x+h.h/2))**2)
+            if distance < d:
+                d = distance
+                self.closestHoleX = h.x+h.w/2
+                self.closestHoleY = h.y+h.h/2
+
 
         nnInputArray = [self.x,self.y,self.closestHoleX,self.closestHoleY]
 
@@ -331,10 +393,11 @@ class Hunter:
 
         playerLines = []
         for p in players:
-            playerLines.append([(p.rect.x,p.rect.y),(p.rect.x+p.rect.w,p.rect.y)])
-            playerLines.append([(p.rect.x,p.rect.y+p.rect.h),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)])
-            playerLines.append([(p.rect.x,p.rect.y),(p.rect.x,p.rect.y+p.rect.h)])
-            playerLines.append([(p.rect.x+p.rect.w,p.rect.y),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)])
+            if p.isInHole == 0:
+                playerLines.append([(p.rect.x,p.rect.y),(p.rect.x+p.rect.w,p.rect.y)])
+                playerLines.append([(p.rect.x,p.rect.y+p.rect.h),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)])
+                playerLines.append([(p.rect.x,p.rect.y),(p.rect.x,p.rect.y+p.rect.h)])
+                playerLines.append([(p.rect.x+p.rect.w,p.rect.y),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)])
         pDistances = distances(playerLines,self,screen)
 
         nnInputArray.extend(wDistances)

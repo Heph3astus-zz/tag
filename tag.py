@@ -29,6 +29,7 @@ players = []
 hunters = []
 
 
+
 random.seed(os.urandom(5000))
 
 for i in range (0, playerCount):
@@ -49,6 +50,14 @@ playerNetwork.shuffle(1)
 # 16 traces for walls
 hunterNetwork = NeuralNetwork(playerCount,hunterCount,36, 'hunter')
 hunterNetwork.shuffle(1)
+
+
+frameCount = 0
+
+hCaptureTimes = [100000] * len(players)
+
+pygame.font.init()
+font = pygame.font.SysFont('Arial', 14)
 
 #loop
 while running:
@@ -82,12 +91,6 @@ while running:
         pygame.draw.rect(screen,(100,100,255),h)
 
 
-    for p in players:
-        pygame.draw.rect(screen,(0,255,0), p.rect)
-
-    for h in hunters:
-        pygame.draw.rect(screen, (255,0,0), h.rect)
-
 
 
     #display walls last so that they go above everything
@@ -95,23 +98,41 @@ while running:
         pygame.draw.line(screen,(0,0,0),w[0],w[1],4)
 
     for p in players:
-        pDecisions.append(playerNetwork.think(p.getInputs(players,hunters,walls,screen),p))
+        if not p.captured:
+            pDecisions.append(playerNetwork.think(p.getInputs(players,hunters,walls,holes,screen),p))
+        else:
+            pDecisions.append([0,0,0,0])
     for h in hunters:
-        hDecisions.append(hunterNetwork.think(h.getInputs(players,walls,screen),h))
+        if h.checkingHole == 0:
+            hDecisions.append(hunterNetwork.think(h.getInputs(players,walls,holes,screen),h))
+        else:
+            hDecisions.append([0,0,0,0])
+
+
+    for p in players:
+        if p.isInHole == 0:
+            pygame.draw.rect(screen,(0,255,0), p.rect)
+        else:
+            pygame.draw.rect(screen,(0,100,0), p.rect)
+    for h in hunters:
+        if not h.checkingHole:
+            pygame.draw.rect(screen, (255,0,0), h.rect)
+        else:
+            pygame.draw.rect(screen, (100,0,0), h.rect)
 
     for i in range(len(pDecisions)):
         #runs network's decided functions
 
-        if pDecisions[i][0]:
+        if pDecisions[i][0] and players[i].isInHole == 0:
             players[i].upX()
             #print("upX")
-        if pDecisions[i][1]:
+        if pDecisions[i][1] and players[i].isInHole == 0:
             players[i].downX()
             #print("downX")
-        if pDecisions[i][2]:
+        if pDecisions[i][2] and players[i].isInHole == 0:
             players[i].upY()
             #print("upY")
-        if pDecisions[i][3]:
+        if pDecisions[i][3] and players[i].isInHole == 0:
             players[i].downY()
             #print("downY")
         if pDecisions[i][4]:
@@ -128,13 +149,42 @@ while running:
         if hDecisions[i][2]:
             hunters[i].upY()
         if hDecisions[i][3]:
-            hunters[i].downy()
+            hunters[i].downY()
         if hDecisions[i][4]:
             hunters[i].Hole()
+            hunters[i].checkLength = 0
+
+        if hunters[i].checkingHole:
+            if hunters[i].checkLength > 30:
+                for p in players:
+                    if p.isInHole:
+                        if p.x == h.closestHoleX and p.y == h.closestHoleX:
+                            for i in range(len(hCaptureTimes)):
+                                if hCaptureTimes[i] == 100000:
+                                    hCaptureTimes[i] == frameCount
+                                    break
+                        p.capture()
+                        p.fitness = p.getFitness(frameCount)
+
+            else:
+                hunters[i].checkLength+=1
+
+    if hCaptureTimes[len(hCaptureTimes)-1] == 100000 and frameCount<1000:
+        frameCount+=1
+        text = font.render(str(frameCount), False, (0,32,107))
+        screen.blit(text, (950,950))
+    else:
+        running = False
 
 
     pygame.display.flip()
 
+hFitness = hunters[0].getFitness(hCaptureTimes)
+
+for p in players:
+    print("players fitness: " + str(p.fitness))
+
+print("hunters fitness: " + str(hFitness))
 
 
 pygame.quit()

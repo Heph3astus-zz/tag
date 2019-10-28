@@ -3,7 +3,7 @@ import pygame
 
 def distances(objects, entity,screen):
 
-    s = [10000, 2.4142, 1, 0.4142, 0.000000001, -0.4142, -1, -2.4142, 10000, 2.4142, 1, 0.4142, -0.000000001, -0.4142, -1, -2.4142]
+    s = [10000, 2.4142, 1, 0.4142, 0.000000001, -0.4142, -1, -2.4142, -10000, 2.4142, 1, 0.4142, -0.000000001, -0.4142, -1, -2.4142]
 
     touching = [10000] * 16
 
@@ -49,9 +49,9 @@ def distances(objects, entity,screen):
             distance = math.sqrt((intersect[0]-entity.x)**2 + (intersect[1]-entity.y)**2)
 
             if distance <= entity.visRad and distance < touching[i]:
-                if i < 8 and intersect[0] - entity.x > 0:
+                if i <= 8 and intersect[0] - entity.x > 0:
                     touching[i] = distance
-                elif i >= 8 and intersect[0] - entity.x < 0:
+                elif i > 8 and intersect[0] - entity.x < 0:
                     touching[i] = distance
 
 
@@ -73,7 +73,7 @@ def distances(objects, entity,screen):
 
         pygame.draw.line(screen, (237, 122, 255), (entity.x, entity.y),(entity.x+m*int(math.cos(a)*entity.visRad),entity.y+m*int(math.sin(a)*entity.visRad)),1)
 
-        pygame.draw.circle(screen,(170,0,255),(int(m*math.cos(a)*touching[i]+entity.x), int(m*math.sin(a)*touching[i]+entity.y)),2)
+        pygame.draw.circle(screen,(0, 53, 176),(int(m*math.cos(a)*touching[i]+entity.x), int(m*math.sin(a)*touching[i]+entity.y)),4)
 
 
     return touching
