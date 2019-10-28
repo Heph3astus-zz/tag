@@ -68,7 +68,6 @@ class NeuralNetwork():
                     newData.append(self.outputWeights[i][x])
             for i in range(0,5):
                 newData.append(self.outputBiases[i])
-            print("length " + str(len(newData)))
             with open(net, 'w') as f:
 
                 for i in range(0,len(newData)-1):
@@ -104,6 +103,9 @@ class NeuralNetwork():
 
     def think(self,inputs,entity):
 
+        if len(inputs) != len(self.weights[0][0]):
+            print(len(self.weights[0][0]))
+            print(len(inputs))
         #variable storing values of previous layer
         previousValues = inputs
         values = previousValues
@@ -131,21 +133,4 @@ class NeuralNetwork():
             if (val/div) >= self.outputBiases[ind]:
                 outputs[ind] = True
 
-        #runs network's decided functions
-
-        if outputs[0]:
-            entity.upX()
-            #print("upX")
-        if outputs[1]:
-            entity.downX()
-            #print("downX")
-        if outputs[2]:
-            entity.upY()
-            #print("upY")
-        if outputs[3]:
-            entity.downY()
-            #print("downY")
-        if outputs[4]:
-            entity.Hole()
-            #print("hole")
-        #print("cycle")
+        return outputs

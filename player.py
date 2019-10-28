@@ -4,6 +4,7 @@ import tensorflow as tf
 import math
 import tensorflow as tf
 import os
+from raycaster import distances
 
 class Player:
     #values for input into the network
@@ -18,16 +19,7 @@ class Player:
 
     rect = None
 
-    #slopes for all of the traces
 
-    #slopes for vertical and completely down are techincally undefined, therefore
-    #they are set to 10000 because thats close enough. Thats moving 1 pixel from
-    #bottom to top of play field
-
-    #all other slopes are approximations calc'ed by doing tan(angle)
-    #slopes are measured starting with up and going clockwise to down
-    #reuse the slopes for opposite lines
-    slopes = [0, -0.4142, -1, -2.4142, 10000, 2.4142, 1, 0.4142]
 
 
     #### IMPORTANT NOTICE. Since I'm too lazy to figure out how to do variable
@@ -44,7 +36,7 @@ class Player:
 
 
     speed = 3
-    visRad = 200
+    visRad = 50
 
     def __init__(self,walls,hunterCount,playerCount,seed):
         self.walls = walls
@@ -56,14 +48,21 @@ class Player:
         while not good:
             x = random.randrange(850)+75
             y = random.randrange(850)+75
-            rect = pygame.Rect(x-25,y-25,50,50)
+            rect = pygame.Rect(x-5,y-5,10,10)
             hit = False
             for w in walls:
-                if rect.colliderect(w):
+                try:
+                    s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
+                except:
+                    s = 10000
+                if ((s * rect.x + w[0][1] >= rect.y and s * rect.x + w[0][1] <= rect.y+rect.h)
+                    or (s * (rect.x+rect.w) + w[0][1] >= rect.y and s * (rect.x+rect.w) + w[0][1] <= rect.y+rect.h)
+                    or (rect.y/s >= rect.x and rect.y/s <= rect.x + rect.w)
+                    or ((rect.y+rect.h)/s >= rect.x and (rect.y+rect.h) <= rect.x+rect.w)
+                ):
                     hit = True
             if not hit:
                 good = True
-        print("pos: " + str(x) + ", " +  str(y))
         self.x = x
         self.y = y
         self.rect = rect
@@ -80,9 +79,17 @@ class Player:
         self.rect.move_ip(self.speed,0)
         hit = False
         for w in self.walls:
-            if self.rect.colliderect(w):
+            try:
+                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
+            except:
+                s = 10000
+            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
+                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
+                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
+                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
+            ):
                 hit = True
-        if hit or self.x > 975:
+        if hit:
             self.x-= self.speed
             self.rect.move_ip(-self.speed,0)
 
@@ -91,9 +98,17 @@ class Player:
         self.rect.move_ip(-self.speed,0)
         hit = False
         for w in self.walls:
-            if self.rect.colliderect(w):
+            try:
+                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
+            except:
+                s = 10000
+            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
+                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
+                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
+                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
+            ):
                 hit = True
-        if hit or self.x < 25:
+        if hit:
             self.x+= self.speed
             self.rect.move_ip(self.speed,0)
 
@@ -102,9 +117,17 @@ class Player:
         self.rect.move_ip(0,self.speed)
         hit = False
         for w in self.walls:
-            if self.rect.colliderect(w):
+            try:
+                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
+            except:
+                s = 10000
+            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
+                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
+                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
+                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
+            ):
                 hit = True
-        if hit or self.y > 975:
+        if hit:
             self.y-= self.speed
             self.rect.move_ip(0,-self.speed)
 
@@ -113,67 +136,24 @@ class Player:
         self.rect.move_ip(0,-self.speed)
         hit = False
         for w in self.walls:
-            if self.rect.colliderect(w):
+            try:
+                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
+            except:
+                s = 10000
+            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
+                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
+                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
+                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
+            ):
                 hit = True
-        if hit or self.y < 25:
+        if hit:
             self.y+= self.speed
             self.rect.move_ip(0,self.speed)
 
     def Hole(self):
         return
 
-    def getInputs(self,players,hunters,screen):
-
-
-        #set to 10000 as the default value of distance, which will hopefully just get ignored by the net
-        touching = [10000] * 16
-        #get wall ray traces
-        for index, w in enumerate(self.walls):
-
-
-            ### terminology. hLineY is the y value of the bottom of a wall
-            ### iPoint is the x value of the intersection point of the ray line and the wall bottom
-            ### y is the y value of the side intercept
-
-            hLineY = w.y-self.y
-
-            for i, s in enumerate(self.slopes):
-
-                if s != 0:
-                    iPoint = int(hLineY/s)
-                else:
-                    iPoint = w.x-self.x
-
-
-            #for intersecting the side wall. determines left or right wall closer
-                if iPoint >= 0 and w.x >= iPoint:
-                    y = int(self.slopes[i]*(w.x - self.x))
-                    #determining if the point is within bounds of side
-                    if y >= w.y-self.y and y <= w.y+w.h-self.y:
-                        distance = math.sqrt((w.x-self.x)**2 + y**2)
-                        if distance <= self.visRad and distance < touching[i]:
-                            touching[i] = distance
-                            pygame.draw.circle(screen, (16,74,122), (w.x,y+self.y),5)
-
-
-                elif iPoint <= 0 and w.x + w.w <= iPoint:
-                    y = int(self.slopes[i]*(w.x+w.w-self.x))
-                    #determining if the point is within bounds of side
-                    if y >= w.y-self.y and y <= w.y+w.h-self.y:
-                        distance = math.sqrt((w.x-self.x)**2 + y**2)
-                        if distance <= self.visRad and distance < touching[i]:
-                            touching[i] = distance
-                            pygame.draw.circle(screen, (16,74,122), (w.x+w.w,y+self.y),5)
-
-
-            #if will be intersecting the wall bottom
-                elif (w.x <= iPoint and w.x + w.w >= iPoint and iPoint >= 0) or (w.x <= iPoint and w.x+ w.w >= iPoint and iPoint <= 0):
-                    distance = math.sqrt(hLineY**2 + iPoint**2)
-                    if distance <= self.visRad and distance < touching[i]:
-                        touching[i] = distance
-                        pygame.draw.circle(screen, (16,74,122), (iPoint+self.x,hLineY+self.y),5)
-
-
+    def getInputs(self,players,hunters,walls,screen):
 
         nnInputArray = [self.x,self.y,self.closestHoleX,self.closestHoleY]
 
@@ -188,7 +168,9 @@ class Player:
 
         nnInputArray.append(self.isInHole)
 
-        nnInputArray.extend(touching)
+        wDistances = distances(walls,self,screen)
+
+        nnInputArray.extend(wDistances)
 
         return nnInputArray
 
@@ -223,9 +205,7 @@ class Hunter:
 
     speed = 5
 
-    visRad = 200
-
-    slopes = [0, -0.4142, -1, -2.4142, 10000, 2.4142, 1, 0.4142]
+    visRad = 100
 
     def __init__(self,walls,hunterCount,playerCount,seed):
         random.seed(seed)
@@ -237,7 +217,7 @@ class Hunter:
         while not good:
             x = random.randrange(850)+75
             y = random.randrange(850)+75
-            rect = pygame.Rect(x-25,y-25,50,50)
+            rect = pygame.Rect(x-5,y-5,10,10)
             hit = False
             for w in walls:
                 if rect.colliderect(w):
@@ -269,9 +249,17 @@ class Hunter:
         self.rect.move_ip(self.speed,0)
         hit = False
         for w in self.walls:
-            if self.rect.colliderect(w):
+            try:
+                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
+            except:
+                s = 10000
+            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
+                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
+                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
+                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
+            ):
                 hit = True
-        if hit or self.x > 975:
+        if hit:
             self.x-= self.speed
             self.rect.move_ip(-self.speed,0)
 
@@ -280,9 +268,17 @@ class Hunter:
         self.rect.move_ip(-self.speed,0)
         hit = False
         for w in self.walls:
-            if self.rect.colliderect(w):
+            try:
+                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
+            except:
+                s = 10000
+            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
+                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
+                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
+                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
+            ):
                 hit = True
-        if hit or self.x < 25:
+        if hit:
             self.x+= self.speed
             self.rect.move_ip(self.speed,0)
 
@@ -291,9 +287,17 @@ class Hunter:
         self.rect.move_ip(0,self.speed)
         hit = False
         for w in self.walls:
-            if self.rect.colliderect(w):
+            try:
+                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
+            except:
+                s = 10000
+            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
+                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
+                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
+                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
+            ):
                 hit = True
-        if hit or self.y > 975:
+        if hit:
             self.y-= self.speed
             self.rect.move_ip(0,-self.speed)
 
@@ -302,126 +306,38 @@ class Hunter:
         self.rect.move_ip(0,-self.speed)
         hit = False
         for w in self.walls:
-            if self.rect.colliderect(w):
+            try:
+                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
+            except:
+                s = 10000
+            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
+                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
+                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
+                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
+            ):
                 hit = True
-        if hit or self.y < 25:
+        if hit:
             self.y+= self.speed
             self.rect.move_ip(0,self.speed)
 
     def Hole(self):
         return
 
-    def getInputs(self, players, screen):
-
-        #wall touching
-        #set to 10000 as the default value of distance, which will hopefully just get ignored by the net
-        wTouching = [10000] * 16
-        #get wall ray traces
-        for index, w in enumerate(self.walls):
-
-
-            ### terminology. hLineY is the y value of the bottom of a wall
-            ### iPoint is the x value of the intersection point of the ray line and the wall bottom
-            ### y is the y value of the side intercept
-
-            hLineY = w.y-self.y
-
-            for i, s in enumerate(self.slopes):
-
-                if s != 0:
-                    iPoint = int(hLineY/s)
-                else:
-                    iPoint = w.x-self.x
-
-
-            #for intersecting the side wall. determines left or right wall closer
-                if iPoint >= 0 and w.x >= iPoint:
-                    y = int(self.slopes[i]*(w.x - self.x))
-                    #determining if the point is within bounds of side
-                    if y >= w.y-self.y and y <= w.y+w.h-self.y:
-                        distance = math.sqrt((w.x-self.x)**2 + y**2)
-                        if distance <= self.visRad and distance < wTouching[i]:
-                            wTouching[i] = distance
-                            pygame.draw.circle(screen, (16,74,122), (w.x,y+self.y),5)
-
-
-                elif iPoint <= 0 and w.x + w.w <= iPoint:
-                    y = int(self.slopes[i]*(w.x+w.w-self.x))
-                    #determining if the point is within bounds of side
-                    if y >= w.y-self.y and y <= w.y+w.h-self.y:
-                        distance = math.sqrt((w.x-self.x)**2 + y**2)
-                        if distance <= self.visRad and distance < wTouching[i]:
-                            wTouching[i] = distance
-                            pygame.draw.circle(screen, (16,74,122), (w.x+w.w,y+self.y),5)
-
-
-            #if will be intersecting the wall bottom
-                elif (w.x <= iPoint and w.x + w.w >= iPoint and iPoint >= 0) or (w.x <= iPoint and w.x+ w.w >= iPoint and iPoint <= 0):
-                    distance = math.sqrt(hLineY**2 + iPoint**2)
-                    if distance <= self.visRad and distance < wTouching[i]:
-                        wTouching[i] = distance
-                        pygame.draw.circle(screen, (16,74,122), (iPoint+self.x,hLineY+self.y),5)
-
-
-
-
-
-        #set to 10000 as the default value of distance, which will hopefully just get ignored by the net
-        pTouching = [10000] * 16
-        #get player ray traces
-        for index, p in enumerate(players):
-
-
-            ### terminology. hLineY is the y value of the bottom of a wall
-            ### iPoint is the x value of the intersection point of the ray line and the wall bottom
-            ### y is the y value of the side intercept
-
-            hLineY = p.rect.y-self.y
-
-            for i, s in enumerate(self.slopes):
-
-                if s != 0:
-                    iPoint = int(hLineY/s)
-                else:
-                    iPoint = p.rect.x-self.x
-
-
-            #for intersecting the side wall. determines left or right wall closer
-                if iPoint >= 0 and p.rect.x >= iPoint:
-                    y = int(self.slopes[i]*(p.rect.x - self.x))
-                    #determining if the point is within bounds of side
-                    if y >= p.rect.y-self.y and y <= p.rect.y+p.rect.h-self.y:
-                        distance = math.sqrt((p.rect.x-self.x)**2 + y**2)
-                        if distance <= self.visRad and distance < pTouching[i]:
-                            pTouching[i] = distance
-                            pygame.draw.circle(screen, (92, 8, 33), (p.rect.x,y+self.y),5)
-
-
-                elif iPoint <= 0 and p.rect.x + p.rect.w <= iPoint:
-                    y = int(self.slopes[i]*(p.rect.x+p.rect.w-self.x))
-                    #determining if the point is within bounds of side
-                    if y >= p.rect.y-self.y and y <= p.rect.y+p.rect.h-self.y:
-                        distance = math.sqrt((p.rect.x-self.x)**2 + y**2)
-                        if distance <= self.visRad and distance < pTouching[i]:
-                            pTouching[i] = distance
-                            pygame.draw.circle(screen, (92, 8, 33), (p.rect.x+p.rect.w,y+self.y),5)
-
-
-            #if will be intersecting the wall bottom
-                elif (p.rect.x <= iPoint and p.rect.x + p.rect.w >= iPoint and iPoint >= 0) or (p.rect.x <= iPoint and p.rect.x+ p.rect.w >= iPoint and iPoint <= 0):
-                    distance = math.sqrt(hLineY**2 + iPoint**2)
-                    if distance <= self.visRad and distance < pTouching[i]:
-                        pTouching[i] = distance
-                        pygame.draw.circle(screen, (92, 8, 33), (iPoint+self.x,hLineY+self.y),5)
-
-
-
-
-
-
+    def getInputs(self, players,walls,screen):
 
         nnInputArray = [self.x,self.y,self.closestHoleX,self.closestHoleY]
-        nnInputArray.extend(wTouching)
-        nnInputArray.extend(pTouching)
+
+        wDistances = distances(walls,self,screen)
+
+        playerLines = []
+        for p in players:
+            playerLines.append([(p.rect.x,p.rect.y),(p.rect.x+p.rect.w,p.rect.y)])
+            playerLines.append([(p.rect.x,p.rect.y+p.rect.h),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)])
+            playerLines.append([(p.rect.x,p.rect.y),(p.rect.x,p.rect.y+p.rect.h)])
+            playerLines.append([(p.rect.x+p.rect.w,p.rect.y),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)])
+        pDistances = distances(playerLines,self,screen)
+
+        nnInputArray.extend(wDistances)
+        nnInputArray.extend(pDistances)
 
         return nnInputArray

@@ -1,26 +1,15 @@
 import random
+import math
 
 def walls():
     walls = []
-    wallCount = random.randrange(10)+10
+    wallCount = random.randrange(15)+30
     for i in range (0,wallCount):
-        if bool(random.getrandbits(1)):
-            good = False
-            vals = []
-            vals = [random.randrange(1000),random.randrange(1000),random.randrange(100)+50,random.randrange(20)+30]
-            walls.append(vals)
-        else:
-            good = False
-            vals = []
-            vals = [random.randrange(1000),random.randrange(1000),random.randrange(20)+30,random.randrange(100)+50]
-            walls.append(vals)
+        sPoint = (random.randrange(900),random.randrange(900))
+        r = random.randrange(50)+100
+        a = random.random()*math.pi*2
 
-        #border walls
-        walls.append([0,0,25,1000])
-        walls.append([25,0,975,25])
-        walls.append([975,25,25,975])
-        walls.append([25,975,950,25])
-
+        walls.append([sPoint,(math.cos(a)*r+sPoint[0],math.sin(a)*r+sPoint[1])])
     return walls
 
 
