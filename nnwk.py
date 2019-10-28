@@ -101,6 +101,25 @@ class NeuralNetwork():
         arr.append(outputBiases)
         return arr
 
+    def write(type,hCount,pCount):
+        data = []
+        for i in range(0,10):
+            for x in range (0,inputCount):
+                for z in range(0,inputCount):
+                    data.append(self.weights[x,i,z])
+        for i in range (0,5):
+            data.append(self.outputWeights[i])
+        for i in self.outputWeights:
+            for x in i:
+                data.append(i)
+        for i in self.outputBiases:
+            data.append(i)
+
+        net = type + "Nets/" + str(pCount) + ":" + str(hCount)
+        with open(net, 'w') as f:
+            f.write(data)
+
+
     def think(self,inputs,entity):
 
         if len(inputs) != len(self.weights[0][0]):
@@ -119,6 +138,8 @@ class NeuralNetwork():
                 values[index] = val
             previousValues = values
 
+        average = 0
+        aCount = 0
         #gets final output layer and turns it into a boolean array to do functions on
         outputs = [False,False,False,False,False]
         for ind, i in enumerate(self.outputWeights):
@@ -132,5 +153,12 @@ class NeuralNetwork():
 
             if (val/div) >= self.outputBiases[ind]:
                 outputs[ind] = True
+                average += val/div
+                aCount += 1
+
+        try:
+            outputs.append(average/aCount)
+        except:
+            outputs.append(100000)
 
         return outputs

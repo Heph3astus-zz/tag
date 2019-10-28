@@ -74,7 +74,7 @@ class Player:
 
 
 
-    def getFitness(frames):
+    def getFitness(self,frames):
         return math.sqrt(frames)
 
     def upX(self):
@@ -274,15 +274,16 @@ class Hunter:
     #### a 500 bonus is added if the last player is caught. This incentivises completion of the find
     #### the power of the time is there so that it will incentivise self.speed at the beginning more than when it is closer to 0
     #### this is in the hopes that as the hunter gets faster it will focus on finding all players instead of just being fast finding the first
-    def getFitness(self,t):
+    def getFitness(self,times):
         fitness = 0
-        prevTime = 0
-        for i, v in enumerate(t):
-            if 1000-(v-prevTime) > 0:
-                fitness+=(1000-(v-prevTime)**2)/(i+1)
-            prevTime += v-prevTime
-        if t[len(t)-1] < 1000:
+        prevTime
+        for i,t in enumerate(times):
+            fitness += 100/(t-prevTime-i)
+            prevTime += t
+
+        if times[len(times)-1] < 1500:
             fitness += 500
+
         return fitness
 
     def upX(self):
@@ -399,6 +400,10 @@ class Hunter:
                 playerLines.append([(p.rect.x,p.rect.y),(p.rect.x,p.rect.y+p.rect.h)])
                 playerLines.append([(p.rect.x+p.rect.w,p.rect.y),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)])
         pDistances = distances(playerLines,self,screen)
+
+        for i in range (len(pDistances)):
+            if wDistances[i] < pDistances[i]:
+                pDistances[i] == 10000
 
         nnInputArray.extend(wDistances)
         nnInputArray.extend(pDistances)
