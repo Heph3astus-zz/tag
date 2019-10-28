@@ -61,7 +61,7 @@ sims = [None] * simCount
 hShuffleRate = 1
 pShuffleRate = 1
 
-info = "genInfo/" + str(playerCount) + ":" + str(hunterCount) + ".txt"
+info = "genInfo/" + str(playerCount) + ";" + str(hunterCount) + ".txt"
 
 genIndex = 0
 if os.path.isfile(info):

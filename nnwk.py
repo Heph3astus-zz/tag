@@ -15,7 +15,7 @@ class NeuralNetwork():
         np.random.seed(1)
 
         #getting weight data if existing and if not creating it
-        net = type + 'Nets/' + str(playerCount) + ':' + str(hunterCount) + '.txt'
+        net = type + 'Nets/' + str(playerCount) + ';' + str(hunterCount) + '.txt'
 
         self.weights = np.zeros((inputCount,10,inputCount),dtype=float)
 
@@ -117,7 +117,7 @@ class NeuralNetwork():
         for i in self.outputBiases:
             data.append(str(i))
 
-        net = type + "Nets/" + str(pCount) + ":" + str(hCount)
+        net = type + "Nets/" + str(pCount) + ";" + str(hCount)
         with open(net, 'w') as f:
             f.writelines(data)
 
