@@ -67,7 +67,7 @@ genIndex = 0
 if os.path.isfile(info):
     with open(info,'r') as f:
         l = f.readlines()
-        genIndex = l[1]
+        genIndex = int(l[1])
 else:
     with open(info,'w') as f:
         f.writelines(["generation:\n0"])
@@ -132,8 +132,8 @@ for i in range (genCount):
 
 data = None
 with open(info,'r') as f:
-    data = file.readlines
+    data = f.readlines()
 
-data[1] = genIndex
+data[1] = str(genIndex)
 with open(info,'w') as f:
     f.writelines(data)

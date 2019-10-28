@@ -19,6 +19,8 @@ class NeuralNetwork():
 
         self.weights = np.zeros((inputCount,10,inputCount),dtype=float)
 
+        self.inputCount = inputCount
+
         if os.path.isfile(net):
             with open(net) as f:
                 #read weights
@@ -104,20 +106,20 @@ class NeuralNetwork():
     def write(self,type,hCount,pCount):
         data = []
         for i in range(0,10):
-            for x in range (0,inputCount):
-                for z in range(0,inputCount):
-                    data.append(self.weights[x,i,z])
+            for x in range (0,self.inputCount):
+                for z in range(0,self.inputCount):
+                    data.append(str(self.weights[x,i,z]))
         for i in range (0,5):
-            data.append(self.outputWeights[i])
+            data.append(str(self.outputWeights[i]))
         for i in self.outputWeights:
             for x in i:
-                data.append(i)
+                data.append(str(x))
         for i in self.outputBiases:
-            data.append(i)
+            data.append(str(i))
 
         net = type + "Nets/" + str(pCount) + ":" + str(hCount)
         with open(net, 'w') as f:
-            f.write(data)
+            f.writelines(data)
 
 
     def think(self,inputs,entity):

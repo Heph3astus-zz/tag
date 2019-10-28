@@ -61,7 +61,9 @@ class Sim:
 
         self.frameCount = 0
 
-        self.hCaptureTimes = [100000] * len(self.players)
+        self.hCaptureTimes = [10000] * len(self.players)
+        for i in range(len(self.hCaptureTimes)):
+            self.hCaptureTimes[i] *= i+1
 
         pygame.font.init()
         self.font = pygame.font.SysFont('Arial', 14)
@@ -202,6 +204,7 @@ class Sim:
 
     def getResults(self):
         hFitness = self.hunters[0].getFitness(self.hCaptureTimes)
+        #print("hf" + str(hFitness))
 
         worstPFitness = 0
 
