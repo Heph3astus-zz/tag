@@ -1,8 +1,6 @@
 import random
 import pygame
-import tensorflow as tf
 import math
-import tensorflow as tf
 import os
 from raycaster import distances
 
