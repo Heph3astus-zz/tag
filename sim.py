@@ -130,10 +130,10 @@ for i in range (genCount):
     if genCount == 1:
         i+= -1
 
-data = None
-with open(info,'r') as f:
-    data = f.readlines()
+    data = None
+    with open(info,'r') as f:
+        data = f.readlines()
 
-data[1] = str(genIndex)
-with open(info,'w') as f:
-    f.writelines(data)
+    data[1] = str(genIndex)
+    with open(info,'w') as f:
+        f.writelines(data)

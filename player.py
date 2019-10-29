@@ -17,9 +17,11 @@ class Player:
 
     rect = None
 
+
     captured = False
 
     fitness = 2000
+    loss = 0
 
     #### IMPORTANT NOTICE. Since I'm too lazy to figure out how to do variable
     #### input node count so that the number of hunters and players can be
@@ -73,7 +75,8 @@ class Player:
 
 
     def getFitness(self,frames):
-        return math.sqrt(frames)
+        return math.sqrt(frames) - self.loss
+
 
     def upX(self):
         self.x+= self.speed
@@ -398,10 +401,15 @@ class Hunter:
             if wDistances[i] < pDistances[i]:
                 pDistances[i] == 10000
 
-        for d in pDistances:
+        for d in range(len(pDistances)):
             #tiny incentive to get closer to players so that the hunter can more easily stumble into points
-            if d != 10000:
-                self.fitness += math.sqrt(self.visRad/d*10)
+            if pDistances[d] != 10000:
+                self.fitness += math.sqrt(self.visRad/pDistances[d]*10)
+                #bumps down player score a little bit so that they try and avoid the hunter
+                #too lazy to change the code to return which player it is so I'll just bump
+                #them all down and hope its helpful. it might make them coordinate? ¯\_(ツ)_/¯
+                for p in players:
+                    p.loss += -math.sqrt(self.visRad/pDistances[d]*10)/30
 
         nnInputArray.extend(wDistances)
         nnInputArray.extend(pDistances)

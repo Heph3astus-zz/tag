@@ -12,10 +12,11 @@ class NeuralNetwork():
     def __init__(self, playerCount, hunterCount, inputCount, type):
 
 
-        np.random.seed(1)
+        np.random.seed(os.urandom())
 
         #getting weight data if existing and if not creating it
-        net = type + 'Nets/' + str(playerCount) + ';' + str(hunterCount) + '.txt'
+        n = type + "Nets/" + str(playerCount) + ";" + str(hunterCount) + ".txt"
+        net = os.path.relpath(n)
 
         self.weights = np.zeros((inputCount,10,inputCount),dtype=float)
 
@@ -77,25 +78,18 @@ class NeuralNetwork():
                 f.write("%s" % newData[len(newData)-1])
 
 
-        #display for checking
-        #print(self.weights[0,0,0])
-        #print(type(self.outputWeights[0][0]))
-        #print(self.outputBiases[0])
-
 
     def shuffle(self,rate):
-        for i in self.weights:
-            for x in i:
-                for z in x:
-                    shuffleNum = np.random.normal(0,rate*0.01,1)
-                    z+= shuffleNum
-        for i in self.outputWeights:
-            for x in i:
-                shuffleNum = np.random.normal(0,rate*0.01,1)
-                x += shuffleNum
-        for i in self.outputBiases:
-            shuffleNum = np.random.normal(0,rate*0.01,1)
-            i += shuffleNum
+        for i in range(0,10):
+            for x in range(0,self.inputCount):
+                for z in range(0,self.inputCount):
+                    self.weights[x,i,z] += np.random.normal(0,rate*0.01,1)
+        for i in range(0,5):
+            for x in range(0,self.inputCount):
+                self.outputWeights[i][x] += np.random.normal(0,rate*0.01,1)
+        for i in range(0,5):
+            self.outputBiases[i] += np.random.normal(0,rate*0.01,1)
+
 
     def getWeights():
         arr = self.weights
@@ -104,22 +98,24 @@ class NeuralNetwork():
         return arr
 
     def write(self,type,hCount,pCount):
-        data = []
+        n = type + "Nets/" + str(pCount) + ";" + str(hCount) + ".txt"
+        net = os.path.relpath(n)
+        #creating and writing file
+        newData = []
         for i in range(0,10):
-            for x in range (0,self.inputCount):
+            for x in range(0,self.inputCount):
                 for z in range(0,self.inputCount):
-                    data.append(str(self.weights[x,i,z]))
-        for i in range (0,5):
-            data.append(str(self.outputWeights[i]))
-        for i in self.outputWeights:
-            for x in i:
-                data.append(str(x))
-        for i in self.outputBiases:
-            data.append(str(i))
-
-        net = type + "Nets/" + str(pCount) + ";" + str(hCount)
+                    newData.append(self.weights[x,i,z])
+        for i in range(0,5):
+            for x in range(0,self.inputCount):
+                newData.append(self.outputWeights[i][x][0])
+        for i in range(0,5):
+            newData.append(self.outputBiases[i][0])
         with open(net, 'w') as f:
-            f.writelines(data)
+
+            for i in range(0,len(newData)-1):
+                f.write("%s\n" % newData[i])
+            f.write("%s" % newData[len(newData)-1])
 
 
     def think(self,inputs,entity):
