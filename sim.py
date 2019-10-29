@@ -71,8 +71,8 @@ if os.path.isfile(info):
 else:
     with open(info,'w') as f:
         f.writelines(["generation:\n0"])
-
-for i in range (genCount):
+g = 0
+while g < genCount:
 
     print("generation " + str(genIndex))
     results = [None] * simCount
@@ -127,9 +127,6 @@ for i in range (genCount):
     pNetwork.write("player",hunterCount,playerCount)
 
     genIndex+=1
-    if genCount == 1:
-        i+= -1
-
     data = None
     with open(info,'r') as f:
         data = f.readlines()
@@ -137,3 +134,5 @@ for i in range (genCount):
     data[1] = str(genIndex)
     with open(info,'w') as f:
         f.writelines(data)
+    if genCount != 1:
+        g+=1

@@ -9,13 +9,13 @@ class NeuralNetwork():
     weights = None
     outputWeights = []
 
-    def __init__(self, playerCount, hunterCount, inputCount, type):
+    def __init__(self, playerCount, hunterCount, inputCount, eType):
 
 
-        np.random.seed(os.urandom())
+        random.seed(os.urandom(5000))
 
         #getting weight data if existing and if not creating it
-        n = type + "Nets/" + str(playerCount) + ";" + str(hunterCount) + ".txt"
+        n = eType + "Nets/" + str(playerCount) + ";" + str(hunterCount) + ".txt"
         net = os.path.relpath(n)
 
         self.weights = np.zeros((inputCount,10,inputCount),dtype=float)
@@ -58,19 +58,20 @@ class NeuralNetwork():
 
             #range is to number of functions
             for i in range(0,5):
-                self.outputBiases.append(0.5 * np.random.random()+0.5)
+                self.outputBiases.append(0.5 * random.random()+0.5)
 
             #creating and writing file
             newData = []
             for i in range(0,10):
-                for x in range(0,inputCount):
-                    for z in range(0,inputCount):
+                for x in range(0,self.inputCount):
+                    for z in range(0,self.inputCount):
                         newData.append(self.weights[x,i,z])
             for i in range(0,5):
-                for x in range(0,inputCount):
-                    newData.append(self.outputWeights[i][x])
+                for x in range(0,self.inputCount):
+                    newData.append(float(self.outputWeights[i][x]))
+
             for i in range(0,5):
-                newData.append(self.outputBiases[i])
+                newData.append(float(self.outputBiases[i]))
             with open(net, 'w') as f:
 
                 for i in range(0,len(newData)-1):
@@ -84,11 +85,17 @@ class NeuralNetwork():
             for x in range(0,self.inputCount):
                 for z in range(0,self.inputCount):
                     self.weights[x,i,z] += np.random.normal(0,rate*0.01,1)
+                    if self.weights[x,i,x] > 1.2:
+                        self.weights[i,i,x] = 1.2
         for i in range(0,5):
             for x in range(0,self.inputCount):
                 self.outputWeights[i][x] += np.random.normal(0,rate*0.01,1)
+                if self.outputWeights[i][x] > 1.2:
+                    self.outputWeights[i][x] = 1.2
         for i in range(0,5):
             self.outputBiases[i] += np.random.normal(0,rate*0.01,1)
+            if self.outputBiases[i] > 0.85:
+                self.outputBiases[i] = 0.85
 
 
     def getWeights():
@@ -97,8 +104,8 @@ class NeuralNetwork():
         arr.append(outputBiases)
         return arr
 
-    def write(self,type,hCount,pCount):
-        n = type + "Nets/" + str(pCount) + ";" + str(hCount) + ".txt"
+    def write(self,eType,hCount,pCount):
+        n = eType + "Nets/" + str(pCount) + ";" + str(hCount) + ".txt"
         net = os.path.relpath(n)
         #creating and writing file
         newData = []
@@ -108,9 +115,10 @@ class NeuralNetwork():
                     newData.append(self.weights[x,i,z])
         for i in range(0,5):
             for x in range(0,self.inputCount):
-                newData.append(self.outputWeights[i][x][0])
+                newData.append(float(self.outputWeights[i][x]))
+
         for i in range(0,5):
-            newData.append(self.outputBiases[i][0])
+            newData.append(float(self.outputBiases[i]))
         with open(net, 'w') as f:
 
             for i in range(0,len(newData)-1):
@@ -119,10 +127,6 @@ class NeuralNetwork():
 
 
     def think(self,inputs,entity):
-
-        if len(inputs) != len(self.weights[0][0]):
-            print(len(self.weights[0][0]))
-            print(len(inputs))
         #variable storing values of previous layer
         previousValues = inputs
         values = previousValues
@@ -131,9 +135,9 @@ class NeuralNetwork():
                 val = 0
                 div = 0
                 for ind, z in enumerate(x):
-                    val += previousValues[ind]*z
+                    val += float(previousValues[ind]*z)
                     div += z
-                values[index] = val
+                values[index] = val/div
             previousValues = values
 
         average = 0

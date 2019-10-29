@@ -411,7 +411,7 @@ class Hunter:
                 for p in players:
                     p.loss += -math.sqrt(self.visRad/pDistances[d]*10)/30
 
+
         nnInputArray.extend(wDistances)
         nnInputArray.extend(pDistances)
-
         return nnInputArray

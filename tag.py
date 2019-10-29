@@ -42,7 +42,7 @@ class Sim:
         for i in range (0, self.playerCount):
             self.players.append(Player(self.walls,self.hunterCount,self.playerCount,random.randrange(200000)))
         for i in range (0, self.hunterCount):
-            self.hunters.append(Hunter(self.walls,self.hunterCount,self.playerCount,random.randrange(200000)+1))
+            self.hunters.append(Hunter(self.walls,self.hunterCount,self.playerCount,random.randrange(200000)))
 
         #creating networks for hunters and players
 
@@ -51,7 +51,7 @@ class Sim:
         # x pos, y pos, closestHoleX, closestHoleY, isInHole
         self.playerNetwork = NeuralNetwork(self.playerCount,self.hunterCount,21+2*(self.playerCount-1+self.hunterCount), 'player')
         self.playerNetwork.shuffle(pShuffleRate)
-        #hunter network will have 36 input nodes + those from players and hunters
+        #hunter network will have 36 input nodes
         # x pos, y pos, closestHoleX, closestHoleY
         # 16 traces for players
         # 16 traces for walls
