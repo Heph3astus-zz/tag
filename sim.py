@@ -147,8 +147,8 @@ while g < genCount:
 
     new = False
     for p in prevHFitness:
-        if p != prevHFitness[0]
-        new = True
+        if p != prevHFitness[0]:
+            new = True
 
     if not new:
         os.remove(os.path.relpath("hunterNets/"+str(playerCount)+";"+str(hunterCount) + ".txt"))
