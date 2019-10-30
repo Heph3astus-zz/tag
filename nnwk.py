@@ -84,18 +84,24 @@ class NeuralNetwork():
         for i in range(0,10):
             for x in range(0,self.inputCount):
                 for z in range(0,self.inputCount):
-                    self.weights[x,i,z] += np.random.normal(0,rate*0.01,1)
+                    self.weights[x,i,z] += float(np.random.normal(loc = 0, scale = rate*0.0001,size = 1))
                     if self.weights[x,i,x] > 1.2:
                         self.weights[i,i,x] = 1.2
+                    elif self.weights[x,i,x] < -1.2:
+                        self.weights[i,i,x] = -1.2
         for i in range(0,5):
             for x in range(0,self.inputCount):
-                self.outputWeights[i][x] += np.random.normal(0,rate*0.01,1)
+                self.outputWeights[i][x] += float(np.random.normal(loc = 0,scale = rate*0.0001,size = 1))
                 if self.outputWeights[i][x] > 1.2:
                     self.outputWeights[i][x] = 1.2
+                elif self.outputWeights[i][x] < -1.2:
+                    self.outputWeights[i][x] = -1.2
         for i in range(0,5):
-            self.outputBiases[i] += np.random.normal(0,rate*0.01,1)
+            self.outputBiases[i] += float(np.random.normal(loc = 0, scale = rate*0.01,size = 1))
             if self.outputBiases[i] > 0.85:
                 self.outputBiases[i] = 0.85
+            if self.outputBiases[i] < 0.5:
+                self.outputBiases[i] = 0.5
 
 
     def getWeights():

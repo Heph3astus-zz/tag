@@ -72,6 +72,7 @@ else:
     with open(info,'w') as f:
         f.writelines(["generation:\n0"])
 g = 0
+prevHFitness = [0] * 5
 while g < genCount:
 
     print("generation " + str(genIndex))
@@ -136,3 +137,18 @@ while g < genCount:
         f.writelines(data)
     if genCount != 1:
         g+=1
+
+    for i in range(len(prevHFitness)-1):
+        prevHFitness[i] = prevHFitness[i+1]
+    prevHFitness[len(prevHFitness)-1] = hFitness
+
+
+    #code to reset network if nothings happening
+
+    new = False
+    for p in prevHFitness:
+        if p != prevHFitness[0]
+        new = True
+
+    if not new:
+        os.remove(os.path.relpath("hunterNets/"+str(playerCount)+";"+str(hunterCount) + ".txt"))

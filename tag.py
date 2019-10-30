@@ -50,13 +50,13 @@ class Sim:
         # 16 traces for walls
         # x pos, y pos, closestHoleX, closestHoleY, isInHole
         self.playerNetwork = NeuralNetwork(self.playerCount,self.hunterCount,21+2*(self.playerCount-1+self.hunterCount), 'player')
-        self.playerNetwork.shuffle(pShuffleRate)
+        self.playerNetwork.shuffle(1)
         #hunter network will have 36 input nodes
         # x pos, y pos, closestHoleX, closestHoleY
         # 16 traces for players
         # 16 traces for walls
         self.hunterNetwork = NeuralNetwork(self.playerCount,self.hunterCount,36, 'hunter')
-        self.hunterNetwork.shuffle(hShuffleRate)
+        self.hunterNetwork.shuffle(1)
 
 
         self.frameCount = 0
