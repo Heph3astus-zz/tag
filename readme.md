@@ -11,10 +11,7 @@ Players get points for the number of seconds they are alive and lose points for 
 There are walls which must be maneuvered around by both Players and Hunters, and also block the Hunter's ability to see players
 
 ### Running Simulation
-'''
-python3 sim.py
-'''
-Then simply enter the desired values and it will either read a previous network or initialize a new one
+go to your terminal of choice and type `python3 sim.py`, Then simply enter the desired values and it will either read a previous network or initialize a new one
 
 ### Network
 the network is just about as simple as it comes. It's just a feed forward network thats being trained with the simplest version of evolution
