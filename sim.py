@@ -1,3 +1,4 @@
+#coordinating script
 import os
 import tag
 
@@ -55,6 +56,13 @@ while True:
     except:
         print("not an int. please try again")
 
+print("frames cap of simulations (default to 1000):")
+frameLen = input()
+try:
+    frameLen = int(frameLen)
+except:
+    print("unrecognized entry. defaulting to 1000")
+    frameLen = 1000
 
 sims = [None] * simCount
 
@@ -65,7 +73,7 @@ info = "genInfo/" + str(playerCount) + ";" + str(hunterCount) + ".txt"
 
 genIndex = 0
 if os.path.isfile(info):
-    with open(info,'r') as f:
+    with open(os.path.relpath(info),'r') as f:
         l = f.readlines()
         genIndex = int(l[1])
 else:
@@ -78,7 +86,7 @@ while g < genCount:
     print("generation " + str(genIndex))
     results = [None] * simCount
 
-    sims = [tag.Sim(playerCount,hunterCount,pShuffleRate,hShuffleRate,False)] * simCount
+    sims = [tag.Sim(playerCount,hunterCount,pShuffleRate,hShuffleRate,False,frameLen)] * simCount
 
     if display:
         sims[0].display = True
@@ -112,12 +120,14 @@ while g < genCount:
     for i in range(len(results)):
         if results[i][0] >= hFitness:
             hFitness = results[i][0]
-            hNetwork = results[i][5]
-            hShuffleRate = results[i][2]
-        if results[i][1] > pFitness:
-            pFitness = results[i][1]
-            pNetwork = results[i][4]
-            pShuffleRate = results[i][3]
+            hNetwork = results[i][1]
+            #So many dumb things ive done here...
+            hShuffleRate = 1
+        if results[i][2] > pFitness:
+            pFitness = results[i][2]
+            pNetwork = results[i][3]
+            #just doing this so that I dont have to edit my code. I'm very lazy
+            pShuffleRate = 1
 
     print("generation complete.")
     print("best hunter fitness: " + str(hFitness))

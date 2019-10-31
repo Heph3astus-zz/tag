@@ -75,7 +75,7 @@ class Player:
 
 
     def getFitness(self,frames):
-        return math.sqrt(frames) - self.loss
+        return frames**2 - self.loss
 
 
     def upX(self):
@@ -192,20 +192,25 @@ class Player:
                 self.closestHoleX = h.x+h.w/2
                 self.closestHoleY = h.y+h.h/2
 
-        nnInputArray = [self.x,self.y,self.closestHoleX,self.closestHoleY]
+        nnInputArray = [self.x/1000,self.y/1000,self.closestHoleX/1000,self.closestHoleY/1000]
 
         for h in hunters:
-            nnInputArray.append(h.x)
-            nnInputArray.append(h.y)
+            nnInputArray.append(h.x/1000)
+            nnInputArray.append(h.y/1000)
         for p in players:
             if p.x == self.x and p.y == self.y:
                 continue
-            nnInputArray.append(p.x)
-            nnInputArray.append(p.y)
+            nnInputArray.append(p.x/1000)
+            nnInputArray.append(p.y/1000)
 
         nnInputArray.append(self.isInHole)
 
-        wDistances = distances(walls,self,screen)
+
+        wDistances = distances(walls,self,screen,self.visRad)
+
+        for i in range(len(wDistances)):
+
+            wDistances[i] = wDistances[i]/self.visRad
 
         nnInputArray.extend(wDistances)
 
@@ -384,9 +389,9 @@ class Hunter:
                 self.closestHoleY = h.y+h.h/2
 
 
-        nnInputArray = [self.x,self.y,self.closestHoleX,self.closestHoleY]
+        nnInputArray = [self.x/1000,self.y/1000,self.closestHoleX/1000,self.closestHoleY/1000]
 
-        wDistances = distances(walls,self,screen)
+        wDistances = distances(walls,self,screen,self.visRad)
 
         playerLines = []
         for p in players:
@@ -395,21 +400,29 @@ class Hunter:
                 playerLines.append([(p.rect.x,p.rect.y+p.rect.h),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)])
                 playerLines.append([(p.rect.x,p.rect.y),(p.rect.x,p.rect.y+p.rect.h)])
                 playerLines.append([(p.rect.x+p.rect.w,p.rect.y),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)])
-        pDistances = distances(playerLines,self,screen)
+        pDistances = distances(playerLines,self,screen, self.visRad)
 
         for i in range (len(pDistances)):
             if wDistances[i] < pDistances[i]:
-                pDistances[i] == 10000
+                pDistances[i] == self.visRad
 
         for d in range(len(pDistances)):
             #tiny incentive to get closer to players so that the hunter can more easily stumble into points
-            if pDistances[d] != 10000:
-                self.fitness += math.sqrt(self.visRad/pDistances[d]*10)
+            if pDistances[d] != self.visRad:
+                self.fitness += 1-pDistances[d]/self.visRad
                 #bumps down player score a little bit so that they try and avoid the hunter
                 #too lazy to change the code to return which player it is so I'll just bump
                 #them all down and hope its helpful. it might make them coordinate? ¯\_(ツ)_/¯
                 for p in players:
-                    p.loss += -math.sqrt(self.visRad/pDistances[d]*10)/30
+                    p.loss += 1-pDistances[d]/self.visRad
+
+        for i in range(len(wDistances)):
+
+            wDistances[i] = wDistances[i]/self.visRad
+
+        for i in range(len(pDistances)):
+
+            pDistances[i] = pDistances[i]/self.visRad
 
 
         nnInputArray.extend(wDistances)

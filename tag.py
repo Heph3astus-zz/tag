@@ -1,3 +1,5 @@
+#for running individual simulations
+
 import pygame
 import enviornment
 from player import *
@@ -7,9 +9,10 @@ import random
 
 
 class Sim:
-    def __init__(self,playerCount,hunterCount,pShuffleRate,hShuffleRate,display):
+    def __init__(self,playerCount,hunterCount,pShuffleRate,hShuffleRate,display,fLen):
         pygame.init()
 
+        self.fLen = fLen
         self.display=display
 
         self.screen = pygame.display.set_mode([1000, 1000])
@@ -31,11 +34,6 @@ class Sim:
         self.playerCount = playerCount
         self.hunterCount = hunterCount
 
-        self.hAverageCertainty = 0
-        self.hAverageCount = 0
-        self.pAverageCertainty = 0
-        self.pAverageCount = 0
-
 
         random.seed(os.urandom(5000))
 
@@ -46,16 +44,16 @@ class Sim:
 
         #creating networks for hunters and players
 
-        #player network will have 21 input nodes + those from players and hunters
-        # 16 traces for walls
+        #player network will have 37 input nodes + those from players and hunters
+        # 32 traces for walls
         # x pos, y pos, closestHoleX, closestHoleY, isInHole
-        self.playerNetwork = NeuralNetwork(self.playerCount,self.hunterCount,21+2*(self.playerCount-1+self.hunterCount), 'player')
+        self.playerNetwork = NeuralNetwork(self.playerCount,self.hunterCount,37+2*(self.playerCount-1+self.hunterCount), 'player')
         self.playerNetwork.shuffle(1)
-        #hunter network will have 36 input nodes
+        #hunter network will have 68 input nodes
         # x pos, y pos, closestHoleX, closestHoleY
-        # 16 traces for players
-        # 16 traces for walls
-        self.hunterNetwork = NeuralNetwork(self.playerCount,self.hunterCount,36, 'hunter')
+        # 32 traces for players
+        # 32 traces for walls
+        self.hunterNetwork = NeuralNetwork(self.playerCount,self.hunterCount,68, 'hunter')
         self.hunterNetwork.shuffle(1)
 
 
@@ -95,7 +93,7 @@ class Sim:
 
         #display players and hunters. separated for visuals
         for p in self.players:
-            pygame.draw.circle(self.screen,(150, 194, 147),(p.x,p.y), int(p.visRad))
+            pygame.draw.circle(self.screen,(150, 194, 147),(int(p.x),int(p.y)), int(p.visRad))
 
         for h in self.hunters:
             pygame.draw.circle(self.screen,(255,100,100),(h.x,h.y),int(h.visRad))
@@ -136,10 +134,6 @@ class Sim:
 
 
         for i in range(len(pDecisions)):
-            #adds to average
-            self.pAverageCertainty += pDecisions[i][5]
-            self.pAverageCount += 1
-
             #runs network's decided functions
 
             if pDecisions[i][0] and self.players[i].isInHole == 0:
@@ -160,9 +154,6 @@ class Sim:
             #print("cycle")
 
         for i in range(len(hDecisions)):
-            #adds to average
-            self.hAverageCertainty += hDecisions[i][5]
-            self.hAverageCount += 1
 
             if hDecisions[i][0]:
                 self.hunters[i].upX()
@@ -191,7 +182,7 @@ class Sim:
                 else:
                     self.hunters[i].checkLength+=1
 
-        if self.hCaptureTimes[len(self.hCaptureTimes)-1] == 100000 and self.frameCount<1000:
+        if self.hCaptureTimes[len(self.hCaptureTimes)-1] == 100000 and self.frameCount<self.fLen:
             self.frameCount+=1
             text = self.font.render(str(self.frameCount), False, (0,32,107))
             self.screen.blit(text, (950,950))
@@ -215,11 +206,10 @@ class Sim:
         statement = []
 
         statement.append(hFitness)
-        statement.append(worstPFitness)
-        statement.append(self.hAverageCertainty/self.hAverageCount)
-        statement.append(self.pAverageCertainty/self.pAverageCount)
-        statement.append(self.playerNetwork)
         statement.append(self.hunterNetwork)
+        statement.append(worstPFitness)
+        statement.append(self.playerNetwork)
+
 
         return statement
 

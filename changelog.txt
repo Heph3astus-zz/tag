@@ -1,0 +1,35 @@
+ok this is turning into a genuine project so I should *probably* have a changelog. here is is
+
+
+V 1.0 (not really but its when I'm staring this) (By Heph3astus):
+  Bug fixes of course
+
+  Added a system to change counts of layers and changed filenames to reflect that
+    This should let me and anyone else experiment with what layer counts work best
+      Yes I could try to implement NEAT but I don't have the skills for that.
+        If someone wants to please do and push it but not to master cuz yea...
+
+  Removed getWeights function as it had no use because I put the writing of the network into the network class
+
+  Got rid of useless template which was just for me to remember how to code it
+
+  Fixed bug that was occasionally throwing permission errors for creating a file
+    Added relpath to all file grabs because some computers didn't like it
+
+  Fixed how player fitness is calculated.
+    The loss was calculated poorly and was accidentally adding instead of subtracting
+      Made less important because its every frame
+
+  Added general options to help hopefully ramp up training speed like easy change to frame count of sim
+
+  Fixed fact that output floats were way higher or lower than the biases
+    Changed normal distribution shuffle variance to reflect this
+    removed the output bias caps
+
+  Added titles to files cuz people might somehow be confused
+
+  Added more rays to the players and hunters so that they can more easily see things (32 rays vs 16)
+
+  Created readme file
+
+  Added this changelog

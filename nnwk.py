@@ -8,6 +8,7 @@ class NeuralNetwork():
     outputBiases = []
     weights = None
     outputWeights = []
+    layerCount = 3
 
     def __init__(self, playerCount, hunterCount, inputCount, eType):
 
@@ -15,19 +16,19 @@ class NeuralNetwork():
         random.seed(os.urandom(5000))
 
         #getting weight data if existing and if not creating it
-        n = eType + "Nets/" + str(playerCount) + ";" + str(hunterCount) + ".txt"
+        n = eType + "Nets/" + str(playerCount) + ";" + str(hunterCount) + "." + str(self.layerCount) + ".txt"
         net = os.path.relpath(n)
 
-        self.weights = np.zeros((inputCount,10,inputCount),dtype=float)
+        self.weights = np.zeros((inputCount,self.layerCount,inputCount),dtype=float)
 
         self.inputCount = inputCount
 
         if os.path.isfile(net):
-            with open(net) as f:
+            with open(os.path.relpath(net)) as f:
                 #read weights
                 counter = 0
                 data = f.readlines()
-                for i in range(0,10):
+                for i in range(0,self.layerCount):
                     for x in range (0,inputCount):
                         for z in range(0,inputCount):
                             self.weights[x,i,z] = float(data[z+(inputCount*x)+(inputCount*inputCount*i)])
@@ -45,7 +46,7 @@ class NeuralNetwork():
                     self.outputBiases.append(float(data[i]))
         else:
 
-            for i in range(0,10):
+            for i in range(0,self.layerCount):
                 for x in range(0,inputCount):
                     for z in range(0,inputCount):
                         num = 2 * random.random() - 1
@@ -62,7 +63,7 @@ class NeuralNetwork():
 
             #creating and writing file
             newData = []
-            for i in range(0,10):
+            for i in range(0,self.layerCount):
                 for x in range(0,self.inputCount):
                     for z in range(0,self.inputCount):
                         newData.append(self.weights[x,i,z])
@@ -72,7 +73,7 @@ class NeuralNetwork():
 
             for i in range(0,5):
                 newData.append(float(self.outputBiases[i]))
-            with open(net, 'w') as f:
+            with open(os.path.relpath(net), 'w+') as f:
 
                 for i in range(0,len(newData)-1):
                     f.write("%s\n" % newData[i])
@@ -81,7 +82,7 @@ class NeuralNetwork():
 
 
     def shuffle(self,rate):
-        for i in range(0,10):
+        for i in range(0,self.layerCount):
             for x in range(0,self.inputCount):
                 for z in range(0,self.inputCount):
                     self.weights[x,i,z] += float(np.random.normal(loc = 0, scale = rate*0.0001,size = 1))
@@ -97,25 +98,14 @@ class NeuralNetwork():
                 elif self.outputWeights[i][x] < -1.2:
                     self.outputWeights[i][x] = -1.2
         for i in range(0,5):
-            self.outputBiases[i] += float(np.random.normal(loc = 0, scale = rate*0.01,size = 1))
-            if self.outputBiases[i] > 0.85:
-                self.outputBiases[i] = 0.85
-            if self.outputBiases[i] < 0.5:
-                self.outputBiases[i] = 0.5
-
-
-    def getWeights():
-        arr = self.weights
-        arr.append(outputWeights)
-        arr.append(outputBiases)
-        return arr
+            self.outputBiases[i] += float(np.random.normal(loc = 0, scale = rate*0.1,size = 1))
 
     def write(self,eType,hCount,pCount):
-        n = eType + "Nets/" + str(pCount) + ";" + str(hCount) + ".txt"
+        n = eType + "Nets/" + str(pCount) + ";" + str(hCount) + "." + str(self.layerCount) + ".txt"
         net = os.path.relpath(n)
         #creating and writing file
         newData = []
-        for i in range(0,10):
+        for i in range(0,self.layerCount):
             for x in range(0,self.inputCount):
                 for z in range(0,self.inputCount):
                     newData.append(self.weights[x,i,z])
@@ -142,31 +132,20 @@ class NeuralNetwork():
                 div = 0
                 for ind, z in enumerate(x):
                     val += float(previousValues[ind]*z)
-                    div += z
-                values[index] = val/div
+                    div += float(z)
+                values[index] = val
             previousValues = values
 
-        average = 0
-        aCount = 0
         #gets final output layer and turns it into a boolean array to do functions on
         outputs = [False,False,False,False,False]
         for ind, i in enumerate(self.outputWeights):
             if ind == 5:
                 break
             val = 0
-            div = 0
             for index, x in enumerate(previousValues):
                 val += x*i[index]
-                div += i[index]
 
-            if (val/div) >= self.outputBiases[ind]:
+            if val >= self.outputBiases[ind]:
                 outputs[ind] = True
-                average += val/div
-                aCount += 1
-
-        try:
-            outputs.append(average/aCount)
-        except:
-            outputs.append(100000)
 
         return outputs
