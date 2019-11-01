@@ -1,7 +1,9 @@
 import random
 import math
+import os
 
 def walls():
+    random.seed(os.urandom(5000))
     walls = []
     wallCount = random.randrange(15)+30
     for i in range (0,wallCount):
@@ -18,6 +20,7 @@ def walls():
 
 
 def holes():
+    random.seed(os.urandom(5000))
     holes = []
     holeCount = random.randrange(10)+5
     for i in range (0,holeCount):
