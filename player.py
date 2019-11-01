@@ -85,7 +85,7 @@ class Player:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 5:
+            if l < 10:
                 hit = True
 
         if hit:
@@ -99,7 +99,7 @@ class Player:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 5:
+            if l < 10:
                 hit = True
 
         if hit:
@@ -112,7 +112,7 @@ class Player:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 5:
+            if l < 10:
                 hit = True
 
         if hit:
@@ -126,7 +126,7 @@ class Player:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 5:
+            if l < 10:
                 hit = True
 
         if hit:
@@ -264,7 +264,7 @@ class Hunter:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 5:
+            if l < 10:
                 hit = True
 
         if hit:
@@ -278,7 +278,7 @@ class Hunter:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 5:
+            if l < 10:
                 hit = True
 
         if hit:
@@ -292,7 +292,7 @@ class Hunter:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 5:
+            if l < 10:
                 hit = True
 
         if hit:
@@ -306,7 +306,7 @@ class Hunter:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 5:
+            if l < 10:
                 hit = True
 
         if hit:

@@ -1,5 +1,10 @@
 ok this is turning into a genuine project so I should *probably* have a changelog. here is is
 
+
+v 1.11 (Heph3astus):
+  created a bandaid solution for an index out of range error that I'm still not sure the cause of
+    Will remove and update once I find the issue
+
 V 1.1 (Heph3astus):
 
   Redid the collision system for players and hunters to use the raycaster
