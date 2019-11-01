@@ -103,7 +103,6 @@ class Sim:
 
 
 
-
         #display walls last so that they go above everything
         for w in self.walls:
             pygame.draw.line(self.screen,(0,0,0),w[0],w[1],4)
@@ -130,6 +129,8 @@ class Sim:
                 pygame.draw.rect(self.screen, (255,0,0), h.rect)
             else:
                 pygame.draw.rect(self.screen, (100,0,0), h.rect)
+
+        pygame.draw.rect(self.screen,(89, 0, 10),self.hunters[0].rect)
 
 
 

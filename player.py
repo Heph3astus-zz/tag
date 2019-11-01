@@ -145,7 +145,7 @@ class Player:
         else:
             self.isInHole = 0
 
-    def Capture():
+    def capture():
         self.captured = True
         self.x = -100
         self.y = -100
