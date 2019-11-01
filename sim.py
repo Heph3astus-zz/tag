@@ -133,9 +133,11 @@ while g < genCount:
     print("best hunter fitness: " + str(hFitness))
     print("best player fitness: " + str(pFitness))
 
-
-    hNetwork.write("hunter",hunterCount,playerCount)
-    pNetwork.write("player",hunterCount,playerCount)
+    try:
+        hNetwork.write("hunter",hunterCount,playerCount)
+        pNetwork.write("player",hunterCount,playerCount)
+    except:
+        pass
 
     genIndex+=1
     data = None
