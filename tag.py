@@ -174,6 +174,8 @@ class Sim:
         try:
             if hDecisions[0][4]:
                 pygame.draw.rect(self.screen, (0,255,0), (975,960,12,12))
+        except:
+            pass
 
         for i in range(len(hDecisions)):
 
@@ -189,6 +191,8 @@ class Sim:
                 if hDecisions[i][4]:
                     self.hunters[i].Hole()
                     self.hunters[i].checkLength = 0
+            except:
+                pass
 
             if self.hunters[i].checkingHole:
                 if self.hunters[i].checkLength > 30:
