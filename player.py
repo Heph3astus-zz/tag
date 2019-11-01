@@ -78,89 +78,60 @@ class Player:
         return frames**2 - self.loss
 
 
-    def upX(self):
+    def upX(self,screen):
         self.x+= self.speed
         self.rect.move_ip(self.speed,0)
         hit = False
-        for w in self.walls:
-            try:
-                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
-            except:
-                s = 10000
-            if s == 0:
-                s = 0.000001
-            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
-                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
-                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
-                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
-            ):
+        wDistances = distances(self.walls,self,screen,self.visRad,False)
+        hit = False
+        for l in wDistances:
+            if l < 5:
                 hit = True
+
         if hit:
             self.x-= self.speed
             self.rect.move_ip(-self.speed,0)
 
-    def downX(self):
+    def downX(self,screen):
         self.x-= self.speed
         self.rect.move_ip(-self.speed,0)
         hit = False
-        for w in self.walls:
-            try:
-                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
-            except:
-                s = 10000
-            if s == 0:
-                s = 0.000001
-            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
-                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
-                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
-                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
-            ):
+        wDistances = distances(self.walls,self,screen,self.visRad,False)
+        hit = False
+        for l in wDistances:
+            if l < 5:
                 hit = True
-        if hit:
-            self.x+= self.speed
-            self.rect.move_ip(self.speed,0)
 
-    def upY(self):
+        if hit:
+            self.x-= self.speed
+            self.rect.move_ip(-self.speed,0)
+
+    def upY(self,screen):
         self.y+= self.speed
         self.rect.move_ip(0,self.speed)
+        wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
-        for w in self.walls:
-            try:
-                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
-            except:
-                s = 10000
-            if s == 0:
-                s = 0.000001
-            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
-                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
-                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
-                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
-            ):
+        for l in wDistances:
+            if l < 5:
                 hit = True
-        if hit:
-            self.y-= self.speed
-            self.rect.move_ip(0,-self.speed)
 
-    def downY(self):
+        if hit:
+            self.x-= self.speed
+            self.rect.move_ip(-self.speed,0)
+
+    def downY(self,screen):
         self.y-= self.speed
         self.rect.move_ip(0,-self.speed)
         hit = False
-        for w in self.walls:
-            try:
-                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
-            except:
-                s = 10000
-            if s == 0:
-                s = 0.000001
-            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
-                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
-                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
-                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
-            ):
+        wDistances = distances(self.walls,self,screen,self.visRad,False)
+        hit = False
+        for l in wDistances:
+            if l < 5:
                 hit = True
+
         if hit:
-            self.y+= self.speed
-            self.rect.move_ip(0,self.speed)
+            self.x-= self.speed
+            self.rect.move_ip(-self.speed,0)
 
     def Hole(self):
         if self.isInHole == 0:
@@ -287,90 +258,60 @@ class Hunter:
 
         return self.fitness
 
-    def upX(self):
+    def upX(self,screen):
         self.x+= self.speed
         self.rect.move_ip(self.speed,0)
+        wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
-        for w in self.walls:
-            try:
-                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
-            except:
-                s = 10000
-            if s == 0:
-                s = 0.000001
-            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
-                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
-                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
-                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
-            ):
+        for l in wDistances:
+            if l < 5:
                 hit = True
 
         if hit:
             self.x-= self.speed
             self.rect.move_ip(-self.speed,0)
 
-    def downX(self):
+    def downX(self,screen):
         self.x-= self.speed
         self.rect.move_ip(-self.speed,0)
         hit = False
-        for w in self.walls:
-            try:
-                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
-            except:
-                s = 10000
-            if s == 0:
-                s = 0.000001
-            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
-                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
-                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
-                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
-            ):
+        wDistances = distances(self.walls,self,screen,self.visRad,False)
+        hit = False
+        for l in wDistances:
+            if l < 5:
                 hit = True
-        if hit:
-            self.x+= self.speed
-            self.rect.move_ip(self.speed,0)
 
-    def upY(self):
+        if hit:
+            self.x-= self.speed
+            self.rect.move_ip(-self.speed,0)
+
+    def upY(self,screen):
         self.y+= self.speed
         self.rect.move_ip(0,self.speed)
         hit = False
-        for w in self.walls:
-            try:
-                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
-            except:
-                s = 10000
-            if s == 0:
-                s = 0.000001
-            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
-                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
-                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
-                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
-            ):
+        wDistances = distances(self.walls,self,screen,self.visRad,False)
+        hit = False
+        for l in wDistances:
+            if l < 5:
                 hit = True
-        if hit:
-            self.y-= self.speed
-            self.rect.move_ip(0,-self.speed)
 
-    def downY(self):
+        if hit:
+            self.x-= self.speed
+            self.rect.move_ip(-self.speed,0)
+
+    def downY(self,screen):
         self.y-= self.speed
         self.rect.move_ip(0,-self.speed)
         hit = False
-        for w in self.walls:
-            try:
-                s = (w[0][1]-w[1][1])/(w[0][0]-w[1][0])
-            except:
-                s = 10000
-            if s == 0:
-                s = 0.000001
-            if ((s * self.rect.x + w[0][1] >= self.rect.y and s * self.rect.x + w[0][1] <= self.rect.y+self.rect.h)
-                or (s * (self.rect.x+self.rect.w) + w[0][1] >= self.rect.y and s * (self.rect.x+self.rect.w) + w[0][1] <= self.rect.y+self.rect.h)
-                or (self.rect.y/s >= self.rect.x and self.rect.y/s <= self.rect.x + self.rect.w)
-                or ((self.rect.y+self.rect.h)/s >= self.rect.x and (self.rect.y+self.rect.h) <= self.rect.x+self.rect.w)
-            ):
+        wDistances = distances(self.walls,self,screen,self.visRad,False)
+        hit = False
+        for l in wDistances:
+            if l < 5:
                 hit = True
+
         if hit:
-            self.y+= self.speed
-            self.rect.move_ip(0,self.speed)
+            self.x-= self.speed
+            self.rect.move_ip(-self.speed,0)
 
     def Hole(self):
         distance = math.sqrt((self.x-self.closestHoleX)**2 + (self.y-self.closestHoleY)**2)

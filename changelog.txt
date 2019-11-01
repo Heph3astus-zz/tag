@@ -1,5 +1,13 @@
 ok this is turning into a genuine project so I should *probably* have a changelog. here is is
 
+V 1.1 (Heph3astus):
+
+  Redid the collision system for players and hunters to use the raycaster
+    the other one was being extremely sensitive and blocking lots of movement
+    Also added the ability to not display anything with the raycaster
+      otherwise would have shifted doubles of the rays
+    removed accidental duplication of execution of functions by players and hunters
+        meant that all functions were going twice as much distance as expected
 
 V 1.0 (not really but its when I'm staring this) (By Heph3astus):
   Bug fixes of course

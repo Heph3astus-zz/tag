@@ -137,16 +137,16 @@ class Sim:
             #runs network's decided functions
 
             if pDecisions[i][0] and self.players[i].isInHole == 0:
-                self.players[i].upX()
+                self.players[i].upX(self.screen)
                 #print("upX")
             if pDecisions[i][1] and self.players[i].isInHole == 0:
-                self.players[i].downX()
+                self.players[i].downX(self.screen)
                 #print("downX")
             if pDecisions[i][2] and self.players[i].isInHole == 0:
-                self.players[i].upY()
+                self.players[i].upY(self.screen)
                 #print("upY")
             if pDecisions[i][3] and self.players[i].isInHole == 0:
-                self.players[i].downY()
+                self.players[i].downY(self.screen)
                 #print("downY")
             if pDecisions[i][4]:
                 self.players[i].Hole()
@@ -164,32 +164,26 @@ class Sim:
 
 
         if hDecisions[0][0]:
-            self.hunters[0].upX()
             pygame.draw.rect(self.screen, (0,255,0), (975,900,12,12))
         if hDecisions[0][1]:
-            self.hunters[0].downX()
             pygame.draw.rect(self.screen, (0,255,0), (975,915,12,12))
         if hDecisions[0][2]:
-            self.hunters[0].upY()
             pygame.draw.rect(self.screen, (0,255,0), (975,930,12,12))
         if hDecisions[0][3]:
-            self.hunters[0].downY()
             pygame.draw.rect(self.screen, (0,255,0), (975,945,12,12))
         if hDecisions[0][4]:
-            self.hunters[0].Hole()
-            self.hunters[0].checkLength = 0
             pygame.draw.rect(self.screen, (0,255,0), (975,960,12,12))
 
         for i in range(len(hDecisions)):
 
             if hDecisions[i][0]:
-                self.hunters[i].upX()
+                self.hunters[i].upX(self.screen)
             if hDecisions[i][1]:
-                self.hunters[i].downX()
+                self.hunters[i].downX(self.screen)
             if hDecisions[i][2]:
-                self.hunters[i].upY()
+                self.hunters[i].upY(self.screen)
             if hDecisions[i][3]:
-                self.hunters[i].downY()
+                self.hunters[i].downY(self.screen)
             if hDecisions[i][4]:
                 self.hunters[i].Hole()
                 self.hunters[i].checkLength = 0

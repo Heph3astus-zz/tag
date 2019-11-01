@@ -1,7 +1,7 @@
 import math
 import pygame
 
-def distances(objects, entity,screen,rad):
+def distances(objects, entity,screen,rad, display = True):
 
 
     #32 rays, 11.25 degrees between them
@@ -73,20 +73,20 @@ def distances(objects, entity,screen,rad):
 
 
 
+    if display:
+        for i in range(len(touching)):
 
-    for i in range(len(touching)):
+            m = 1
 
-        m = 1
+            if i > 16:
+                m = -1
 
-        if i > 16:
-            m = -1
+            a = math.atan(s[i])
 
-        a = math.atan(s[i])
+            pygame.draw.line(screen, (237, 122, 255), (entity.x, entity.y),(entity.x+m*int(math.cos(a)*entity.visRad),entity.y+m*int(math.sin(a)*entity.visRad)),1)
 
-        pygame.draw.line(screen, (237, 122, 255), (entity.x, entity.y),(entity.x+m*int(math.cos(a)*entity.visRad),entity.y+m*int(math.sin(a)*entity.visRad)),1)
-
-        if touching[i] != rad:
-            pygame.draw.circle(screen,(0, 53, 176),(int(m*math.cos(a)*touching[i]+entity.x), int(m*math.sin(a)*touching[i]+entity.y)),4)
+            if touching[i] != rad:
+                pygame.draw.circle(screen,(0, 53, 176),(int(m*math.cos(a)*touching[i]+entity.x), int(m*math.sin(a)*touching[i]+entity.y)),4)
 
 
     return touching
