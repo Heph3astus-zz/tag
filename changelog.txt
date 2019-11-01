@@ -1,5 +1,8 @@
 ok this is turning into a genuine project so I should *probably* have a changelog. here is is
 
+V 1.13 (Heph3astus):
+  added a punishment to the hunter for staying still
+    This should promote more exploration and stop it from just staying in one place collecting points from players nearby
 
 V 1.12 (Heph3astus):
   changed colour of collision dots

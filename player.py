@@ -205,6 +205,8 @@ class Player:
 
 class Hunter:
 
+    prevX = 1001
+    prevY = 1001
     fitness = 0
     x = 0
     y = 0
@@ -249,7 +251,7 @@ class Hunter:
     def getFitness(self,times):
         prevTime = 0
         for i,t in enumerate(times):
-            self.fitness += 100/(t-prevTime-i)
+            self.fitness += 5000/(t-prevTime-i)
             prevTime = t
 
 
@@ -320,7 +322,11 @@ class Hunter:
 
 
     def getInputs(self, players,walls,holes,screen):
-
+        #punishes staying still
+        if self.prevX == self.x and self.prevY == self.y:
+            self.fitness += -10
+        self.prevX = self.x
+        self.prevY = self.y
         d = 5000
         for h in holes:
             distance = math.sqrt((self.x-(h.x+h.w/2))**2 + (self.y-(h.x+h.h/2))**2)
