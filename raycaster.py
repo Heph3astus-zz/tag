@@ -86,7 +86,7 @@ def distances(objects, entity,screen,rad, display = True):
             pygame.draw.line(screen, (237, 122, 255), (entity.x, entity.y),(entity.x+m*int(math.cos(a)*entity.visRad),entity.y+m*int(math.sin(a)*entity.visRad)),1)
 
             if touching[i] != rad:
-                pygame.draw.circle(screen,(0, 53, 176),(int(m*math.cos(a)*touching[i]+entity.x), int(m*math.sin(a)*touching[i]+entity.y)),4)
+                pygame.draw.circle(screen,(252, 186, 3),(int(m*math.cos(a)*touching[i]+entity.x), int(m*math.sin(a)*touching[i]+entity.y)),4)
 
 
     return touching

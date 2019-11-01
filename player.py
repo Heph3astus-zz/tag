@@ -85,7 +85,7 @@ class Player:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 10:
+            if l < 5:
                 hit = True
 
         if hit:
@@ -99,12 +99,12 @@ class Player:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 10:
+            if l < 5:
                 hit = True
 
         if hit:
-            self.x-= self.speed
-            self.rect.move_ip(-self.speed,0)
+            self.x+= self.speed
+            self.rect.move_ip(+self.speed,0)
 
     def upY(self,screen):
         self.y+= self.speed
@@ -112,12 +112,12 @@ class Player:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 10:
+            if l < 5:
                 hit = True
 
         if hit:
-            self.x-= self.speed
-            self.rect.move_ip(-self.speed,0)
+            self.y-= self.speed
+            self.rect.move_ip(0,-self.speed)
 
     def downY(self,screen):
         self.y-= self.speed
@@ -126,12 +126,12 @@ class Player:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 10:
+            if l < 5:
                 hit = True
 
         if hit:
-            self.x-= self.speed
-            self.rect.move_ip(-self.speed,0)
+            self.x+= self.speed
+            self.rect.move_ip(0,self.speed)
 
     def Hole(self):
         if self.isInHole == 0:
@@ -264,7 +264,7 @@ class Hunter:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 10:
+            if l < 5:
                 hit = True
 
         if hit:
@@ -278,12 +278,12 @@ class Hunter:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 10:
+            if l < 5:
                 hit = True
 
         if hit:
-            self.x-= self.speed
-            self.rect.move_ip(-self.speed,0)
+            self.x+= self.speed
+            self.rect.move_ip(self.speed,0)
 
     def upY(self,screen):
         self.y+= self.speed
@@ -292,12 +292,12 @@ class Hunter:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 10:
+            if l < 5:
                 hit = True
 
         if hit:
-            self.x-= self.speed
-            self.rect.move_ip(-self.speed,0)
+            self.y-= self.speed
+            self.rect.move_ip(0,-self.speed)
 
     def downY(self,screen):
         self.y-= self.speed
@@ -306,12 +306,12 @@ class Hunter:
         wDistances = distances(self.walls,self,screen,self.visRad,False)
         hit = False
         for l in wDistances:
-            if l < 10:
+            if l < 5:
                 hit = True
 
         if hit:
-            self.x-= self.speed
-            self.rect.move_ip(-self.speed,0)
+            self.y+= self.speed
+            self.rect.move_ip(0,self.speed)
 
     def Hole(self):
         distance = math.sqrt((self.x-self.closestHoleX)**2 + (self.y-self.closestHoleY)**2)
