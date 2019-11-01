@@ -153,6 +153,33 @@ class Sim:
                 #print("hole")
             #print("cycle")
 
+
+
+        #display red rects as default:
+        pygame.draw.rect(self.screen, (255,0,0), (975,900,12,12))
+        pygame.draw.rect(self.screen, (255,0,0), (975,915,12,12))
+        pygame.draw.rect(self.screen, (255,0,0), (975,930,12,12))
+        pygame.draw.rect(self.screen, (255,0,0), (975,945,12,12))
+        pygame.draw.rect(self.screen, (255,0,0), (975,960,12,12))
+
+
+        if hDecisions[0][0]:
+            self.hunters[0].upX()
+            pygame.draw.rect(self.screen, (0,255,0), (975,900,12,12))
+        if hDecisions[0][1]:
+            self.hunters[0].downX()
+            pygame.draw.rect(self.screen, (0,255,0), (975,915,12,12))
+        if hDecisions[0][2]:
+            self.hunters[0].upY()
+            pygame.draw.rect(self.screen, (0,255,0), (975,930,12,12))
+        if hDecisions[0][3]:
+            self.hunters[0].downY()
+            pygame.draw.rect(self.screen, (0,255,0), (975,945,12,12))
+        if hDecisions[0][4]:
+            self.hunters[0].Hole()
+            self.hunters[0].checkLength = 0
+            pygame.draw.rect(self.screen, (0,255,0), (975,960,12,12))
+
         for i in range(len(hDecisions)):
 
             if hDecisions[i][0]:
