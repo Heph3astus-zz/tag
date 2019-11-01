@@ -161,4 +161,4 @@ while g < genCount:
             new = True
 
     if not new:
-        os.remove(os.path.relpath("hunterNets/"+str(playerCount)+";"+str(hunterCount) + ".txt"))
+        os.remove(os.path.relpath("hunterNets/"+str(playerCount)+";"+str(hunterCount) + str(hNetwork.layerCount) + ".txt"))
