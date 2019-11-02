@@ -145,7 +145,7 @@ class Player:
         else:
             self.isInHole = 0
 
-    def capture():
+    def capture(self):
         self.captured = True
         self.x = -100
         self.y = -100
@@ -362,6 +362,21 @@ class Hunter:
                 #them all down and hope its helpful. it might make them coordinate? ¯\_(ツ)_/¯
                 for p in players:
                     p.loss += 1-pDistances[d]/self.visRad
+
+        for p in players:
+            d = distances([[(p.rect.x,p.rect.y),(p.rect.x+p.rect.w,p.rect.y)],
+                [(p.rect.x,p.rect.y+p.rect.h),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)]
+                ,[(p.rect.x,p.rect.y),(p.rect.x,p.rect.y+p.rect.h)],
+                [(p.rect.x+p.rect.w,p.rect.y),(p.rect.x+p.rect.w,p.rect.y+p.rect.h)]]
+                ,self,screen,self.visRad)
+            for i in range(len(d)):
+                if wDistances[i] < d[i]:
+                    d[i] = self.visRad
+
+            for n in d:
+                if n < 8:
+                    p.capture()
+
 
         for i in range(len(wDistances)):
 

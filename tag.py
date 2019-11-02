@@ -136,21 +136,21 @@ class Sim:
 
         for i in range(len(pDecisions)):
             #runs network's decided functions
-
-            if pDecisions[i][0] and self.players[i].isInHole == 0:
-                self.players[i].upX(self.screen)
-                #print("upX")
-            if pDecisions[i][1] and self.players[i].isInHole == 0:
-                self.players[i].downX(self.screen)
-                #print("downX")
-            if pDecisions[i][2] and self.players[i].isInHole == 0:
-                self.players[i].upY(self.screen)
-                #print("upY")
-            if pDecisions[i][3] and self.players[i].isInHole == 0:
-                self.players[i].downY(self.screen)
-                #print("downY")
-            if pDecisions[i][4]:
-                self.players[i].Hole()
+            if self.players[i].captured == False:
+                if pDecisions[i][0] and self.players[i].isInHole == 0:
+                    self.players[i].upX(self.screen)
+                    #print("upX")
+                if pDecisions[i][1] and self.players[i].isInHole == 0:
+                    self.players[i].downX(self.screen)
+                    #print("downX")
+                if pDecisions[i][2] and self.players[i].isInHole == 0:
+                    self.players[i].upY(self.screen)
+                    #print("upY")
+                if pDecisions[i][3] and self.players[i].isInHole == 0:
+                    self.players[i].downY(self.screen)
+                    #print("downY")
+                if pDecisions[i][4]:
+                    self.players[i].Hole()
                 #print("hole")
             #print("cycle")
 
@@ -225,7 +225,7 @@ class Sim:
         hFitness = self.hunters[0].getFitness(self.hCaptureTimes)
         #print("hf" + str(hFitness))
 
-        worstPFitness = 0
+        worstPFitness = -100000000
 
         for p in self.players:
             if p.fitness > worstPFitness:

@@ -1,5 +1,10 @@
 ok this is turning into a genuine project so I should *probably* have a changelog. here is is
 
+V 1.2 (Hep3astus):
+  Actually added the capturing mechanism. The nets were too bad at the game to have it happen but then I realized it was very broken
+  Did some other changes that I don't remember
+
+
 V 1.13 (Heph3astus):
   added a punishment to the hunter for staying still
     This should promote more exploration and stop it from just staying in one place collecting points from players nearby

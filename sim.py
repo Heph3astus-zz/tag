@@ -156,11 +156,13 @@ while g < genCount:
 
 
     #code to reset network if nothings happening
-
     new = False
     for p in prevHFitness:
         if p != prevHFitness[0]:
             new = True
 
     if not new:
-        os.remove(os.path.relpath("hunterNets/"+str(playerCount)+";"+str(hunterCount) + "." + str(hNetwork.layerCount) + ".txt"))
+        try:
+            os.remove(os.path.relpath("hunterNets/"+str(playerCount)+";"+str(hunterCount) + "." + str(hNetwork.layerCount) + ".txt"))
+        except:
+            os.remove(os.path.relpath("hunterNets/"+str(playerCount)+";"+str(hunterCount) + ".3.txt"))
